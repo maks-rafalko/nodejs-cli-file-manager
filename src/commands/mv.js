@@ -1,9 +1,9 @@
-import { fileExists, folderExists, normalizeToAbsolutePath } from '../fsFunctions.js';
-import { OperationFailedError } from '../OperationFailedError.js';
+import { normalizeToAbsolutePath } from '../fsFunctions.js';
 import { basename, join } from 'node:path';
 import { validateCommandLine } from '../commandLineValidator.js';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { rm } from 'node:fs/promises';
+import { assertFileDoesNotExist, assertFileExists, assertFolderExists } from '../asserts.js';
 
 export const mv = async (executionContext, parsedCommandLine) => {
     validateCommandLine(parsedCommandLine, {requiredArguments: ['filePath', 'newDirectoryPath']});
@@ -11,15 +11,15 @@ export const mv = async (executionContext, parsedCommandLine) => {
     const rawFilePath = parsedCommandLine.arguments[0];
     const resultMovedFilePath = normalizeToAbsolutePath(executionContext.currentDir, rawFilePath);
 
-    await assertMovedFileExists(resultMovedFilePath);
+    await assertFileExists(resultMovedFilePath);
 
     const rawNewDirectoryPath = parsedCommandLine.arguments[1];
     const resultNewDirectoryPath = normalizeToAbsolutePath(executionContext.currentDir, rawNewDirectoryPath);
     const fileName = basename(resultMovedFilePath);
     const resultNewFilePath = join(resultNewDirectoryPath, fileName);
 
-    await assertNewFilePathDoesNotExist(resultNewFilePath);
-    await assertFolderForNewFileExists(resultNewDirectoryPath);
+    await assertFileDoesNotExist(resultNewFilePath);
+    await assertFolderExists(resultNewDirectoryPath);
 
     return new Promise(async (resolve, reject) => {
         try {
@@ -37,27 +37,3 @@ export const mv = async (executionContext, parsedCommandLine) => {
         }
     });
 };
-
-const assertMovedFileExists = async (resultMovedFilePath) => {
-    const isCopiedFileExists = await fileExists(resultMovedFilePath);
-
-    if (!isCopiedFileExists) {
-        throw new OperationFailedError();
-    }
-}
-
-const assertNewFilePathDoesNotExist = async (resultNewFilePath) => {
-    const isNewPathAlreadyExists = await fileExists(resultNewFilePath);
-
-    if (isNewPathAlreadyExists) {
-        throw new OperationFailedError();
-    }
-}
-
-const assertFolderForNewFileExists = async (resultNewDirectoryPath) => {
-    const isFolderExists = await folderExists(resultNewDirectoryPath);
-
-    if (!isFolderExists) {
-        throw new OperationFailedError();
-    }
-}

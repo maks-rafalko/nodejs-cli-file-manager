@@ -3,7 +3,8 @@ import { readFile } from 'node:fs/promises';
 import { validateCommandLine } from '../commandLineValidator.js';
 import { OperationFailedError } from "../OperationFailedError.js";
 import { displayMessage } from '../io.js';
-import { folderExists, normalizeToAbsolutePath } from '../fsFunctions.js';
+import { normalizeToAbsolutePath } from '../fsFunctions.js';
+import { assertFolderDoesNotExist } from '../asserts.js';
 
 const sha256AsHex = (content) => createHash('sha256').update(content).digest('hex');
 
@@ -15,7 +16,7 @@ export const hash = async (executionContext, parsedCommandLine) => {
     const resultPath = normalizeToAbsolutePath(executionContext.currentDir, targetPath);
 
     try {
-        await assertPathIsNotDirectory(resultPath);
+        await assertFolderDoesNotExist(resultPath);
 
         const fileBuffer = await readFile(resultPath);
 
@@ -23,14 +24,6 @@ export const hash = async (executionContext, parsedCommandLine) => {
 
         displayMessage(`SHA-256 of file "${resultPath}": ${hex}`);
     } catch (error) {
-        throw new OperationFailedError();
-    }
-}
-
-const assertPathIsNotDirectory = async (path) => {
-    const isFolderExists = await folderExists(path);
-
-    if (isFolderExists) {
         throw new OperationFailedError();
     }
 }

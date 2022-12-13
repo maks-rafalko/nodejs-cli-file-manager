@@ -1,7 +1,8 @@
-import { rm as rmNative, stat } from 'node:fs/promises';
-import { fileExists, normalizeToAbsolutePath } from '../fsFunctions.js';
+import { rm as rmNative } from 'node:fs/promises';
+import { normalizeToAbsolutePath } from '../fsFunctions.js';
+import { validateCommandLine } from '../commandLineValidator.js';
+import { assertFolderDoesNotExist } from '../asserts.js';
 import { OperationFailedError } from '../OperationFailedError.js';
-import { validateCommandLine } from "../commandLineValidator.js";
 
 export const rm = async (executionContext, parsedCommandLine) => {
     validateCommandLine(parsedCommandLine, {requiredArguments: ['filePath']});
@@ -10,15 +11,11 @@ export const rm = async (executionContext, parsedCommandLine) => {
 
     let resultPath = normalizeToAbsolutePath(executionContext.currentDir, targetPath);
 
-    if (!await fileExists(resultPath)) {
+    try {
+        await assertFolderDoesNotExist(resultPath);
+
+        await rmNative(resultPath);
+    } catch (error) {
         throw new OperationFailedError();
     }
-
-    const fileStats = await stat(resultPath);
-
-    if (fileStats.isDirectory()) {
-        throw new OperationFailedError();
-    }
-
-    await rmNative(resultPath);
 };

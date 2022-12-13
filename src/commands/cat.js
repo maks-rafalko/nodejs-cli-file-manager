@@ -1,8 +1,7 @@
-import { stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
-import { fileExists, normalizeToAbsolutePath } from '../fsFunctions.js';
-import { OperationFailedError } from '../OperationFailedError.js';
+import { normalizeToAbsolutePath } from '../fsFunctions.js';
 import { validateCommandLine } from '../commandLineValidator.js';
+import { assertFileExists, assertFolderDoesNotExist } from '../asserts.js';
 
 export const cat = async (executionContext, parsedCommandLine) => {
     validateCommandLine(parsedCommandLine, {requiredArguments: ['filePath']});
@@ -11,15 +10,8 @@ export const cat = async (executionContext, parsedCommandLine) => {
 
     let resultPath = normalizeToAbsolutePath(executionContext.currentDir, targetPath);
 
-    if (!await fileExists(resultPath)) {
-        throw new OperationFailedError();
-    }
-
-    const fileStats = await stat(resultPath);
-
-    if (fileStats.isDirectory()) {
-        throw new OperationFailedError();
-    }
+    await assertFileExists(resultPath);
+    await assertFolderDoesNotExist(resultPath);
 
     return new Promise((resolve, reject) => {
         try {

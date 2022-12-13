@@ -1,8 +1,8 @@
-import { fileExists, normalizeToAbsolutePath } from '../fsFunctions.js';
-import { OperationFailedError } from '../OperationFailedError.js';
+import { normalizeToAbsolutePath } from '../fsFunctions.js';
 import { validateCommandLine } from '../commandLineValidator.js';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { createBrotliCompress } from 'node:zlib';
+import { assertFileDoesNotExist, assertFileExists} from '../asserts.js';
 
 export const compress = async (executionContext, parsedCommandLine) => {
     validateCommandLine(parsedCommandLine, {requiredArguments: ['filePathToCompress', 'filePathToCompressionResult']});
@@ -15,7 +15,7 @@ export const compress = async (executionContext, parsedCommandLine) => {
     const rawCompressionResultFilePath = parsedCommandLine.arguments[1];
     const compressionResultFilePath = normalizeToAbsolutePath(executionContext.currentDir, rawCompressionResultFilePath);
 
-    await assertNewFilePathDoesNotExist(compressionResultFilePath);
+    await assertFileDoesNotExist(compressionResultFilePath);
 
     return new Promise((resolve, reject) => {
         try {
@@ -32,19 +32,3 @@ export const compress = async (executionContext, parsedCommandLine) => {
         }
     });
 };
-
-const assertFileExists = async (filePath) => {
-    const isFileExists = await fileExists(filePath);
-
-    if (!isFileExists) {
-        throw new OperationFailedError();
-    }
-}
-
-const assertNewFilePathDoesNotExist = async (resultNewFilePath) => {
-    const isNewPathAlreadyExists = await fileExists(resultNewFilePath);
-
-    if (isNewPathAlreadyExists) {
-        throw new OperationFailedError();
-    }
-}
