@@ -2,7 +2,7 @@ import { normalizeToAbsolutePath } from '../fsFunctions.js';
 import { validateCommandLine } from '../commandLineValidator.js';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { createBrotliDecompress } from 'node:zlib';
-import {assertFileDoesNotExist, assertFileExists} from '../asserts.js';
+import { assertFileDoesNotExist, assertFileExists } from '../asserts.js';
 
 export const decompress = async (executionContext, parsedCommandLine) => {
     validateCommandLine(parsedCommandLine, {requiredArguments: ['filePathToDecompress', 'filePathToCompressionResult']});

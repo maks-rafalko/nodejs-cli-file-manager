@@ -1,5 +1,4 @@
-import { fileExists, folderExists, normalizeToAbsolutePath } from '../fsFunctions.js';
-import { OperationFailedError } from '../OperationFailedError.js';
+import { normalizeToAbsolutePath } from '../fsFunctions.js';
 import { basename, join } from 'node:path';
 import { validateCommandLine } from '../commandLineValidator.js';
 import { createReadStream, createWriteStream } from 'node:fs';

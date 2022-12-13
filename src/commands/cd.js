@@ -1,5 +1,5 @@
 import { normalizeToAbsolutePath } from '../fsFunctions.js';
-import {validateCommandLine} from '../commandLineValidator.js';
+import { validateCommandLine } from '../commandLineValidator.js';
 import { assertFolderExists } from '../asserts.js';
 
 export const cd = async (executionContext, parsedCommandLine) => {
