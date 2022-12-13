@@ -21,7 +21,6 @@ import { OperationFailedError } from './OperationFailedError.js';
 const meaningfulArgs = process.argv.slice(NOT_MEANINGFUL_ARG_COUNT);
 const optionsWithValues = parseCommandLineArguments(meaningfulArgs);
 
-// todo read carefully about home/root directory
 const username = optionsWithValues.options['--username'] || 'Guest';
 const executionContext = {
     homeDir: osNative.homedir(),

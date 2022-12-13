@@ -38,7 +38,6 @@ const parseArgumentsStringToArray = (argsAsString) => {
     return parsedMatches;
 }
 
-// todo add tests and refactor
 /**
  * Examples of `meaningfulArguments`:
  *   ['some path/dir', --option', 'John', '--username=Nick', '--EOL']

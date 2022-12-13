@@ -14,7 +14,6 @@ export const cp = async (executionContext, parsedCommandLine) => {
 
     const rawNewDirectoryPath = parsedCommandLine.arguments[1];
     const resultNewDirectoryPath = normalizeToAbsolutePath(executionContext.currentDir, rawNewDirectoryPath);
-    // todo check on windows
     const fileName = basename(resultCopiedFilePath);
     const resultNewFilePath = join(resultNewDirectoryPath, fileName);
 
