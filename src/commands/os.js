@@ -4,16 +4,15 @@ import { displayMessage } from '../io.js';
 
 const GHZ_IN_MHZ = 1000;
 
-export const os = async (executionContext, parsedCommandLine) => {
-    // try to move outside
-    const optionsHandlerMapping = {
-        '--EOL': displayEolInfo,
-        '--cpus': displayCpusInfo,
-        '--homedir': displayHomedirInfo,
-        '--username': displayUsernameInfo,
-        '--architecture': displayArchitectureInfo,
-    };
+const optionsHandlerMapping = {
+    '--EOL': displayEolInfo,
+    '--cpus': displayCpusInfo,
+    '--homedir': displayHomedirInfo,
+    '--username': displayUsernameInfo,
+    '--architecture': displayArchitectureInfo,
+};
 
+export const os = async (executionContext, parsedCommandLine) => {
     validateCommandLine(parsedCommandLine, {
         requiredArguments: [],
         allowedOptions: Object.keys(optionsHandlerMapping),
@@ -28,11 +27,11 @@ export const os = async (executionContext, parsedCommandLine) => {
     }
 }
 
-const displayEolInfo = () => {
+function displayEolInfo() {
     displayMessage(`Default EOL: ${JSON.stringify(osNative.EOL)}`);
 }
 
-const displayCpusInfo = () => {
+function displayCpusInfo() {
     const cpus = osNative.cpus();
 
     displayMessage(`Number of CPUs: ${cpus.length}`);
@@ -43,8 +42,14 @@ const displayCpusInfo = () => {
     });
 }
 
-const displayHomedirInfo = () => displayMessage(`Home directory: ${osNative.homedir()}`);
+function displayHomedirInfo() {
+    displayMessage(`Home directory: ${osNative.homedir()}`);
+}
 
-const displayUsernameInfo = () => displayMessage(`System user name: ${osNative.userInfo().username}`);
+function displayUsernameInfo() {
+    displayMessage(`System user name: ${osNative.userInfo().username}`);
+}
 
-const displayArchitectureInfo = () => displayMessage(`Architecture: ${osNative.arch()}`);
+function displayArchitectureInfo() {
+    displayMessage(`Architecture: ${osNative.arch()}`);
+}
