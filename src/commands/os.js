@@ -45,6 +45,6 @@ const displayCpusInfo = () => {
 
 const displayHomedirInfo = () => displayMessage(`Home directory: ${osNative.homedir()}`);
 
-const displayUsernameInfo = () => displayMessage(`Username: ${osNative.userInfo().username}`);
+const displayUsernameInfo = () => displayMessage(`System user name: ${osNative.userInfo().username}`);
 
 const displayArchitectureInfo = () => displayMessage(`Architecture: ${osNative.arch()}`);
