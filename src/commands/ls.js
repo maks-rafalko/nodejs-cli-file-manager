@@ -14,6 +14,8 @@ export const ls = async (executionContext, parsedCommandLine) => {
         const files = await readdir(resultPath, {withFileTypes: true});
 
         const filesWithStats = files
+            // for the sake of simplicity, we will not display symlinks and other non-file/directory entries
+            .filter((file) => file.isDirectory() || file.isFile())
             .map((file) => {
                 return {
                     name: file.name,
