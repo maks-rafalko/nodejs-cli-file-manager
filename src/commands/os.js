@@ -35,10 +35,9 @@ function displayCpusInfo() {
     const cpus = osNative.cpus();
 
     displayMessage(`Number of CPUs: ${cpus.length}`);
-    displayMessage(`CPU Model: ${cpus[0].model}`);
 
     osNative.cpus().forEach((cpu, index) => {
-        displayMessage(`    CPU core #${index + 1} speed: ${cpu.speed / GHZ_IN_MHZ} GHz`);
+        displayMessage(`    CPU #${index + 1}. Model: ${cpu.model} speed: ${cpu.speed / GHZ_IN_MHZ} GHz`);
     });
 }
 
