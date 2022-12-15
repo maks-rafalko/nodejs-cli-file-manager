@@ -7,26 +7,33 @@ export const ls = async (executionContext, parsedCommandLine) => {
     validateCommandLine(parsedCommandLine, {optionalArguments: ['directoryPath']});
 
     const targetPath = parsedCommandLine.arguments[0] || executionContext.currentDir;
-
-    let resultPath = normalizeToAbsolutePath(executionContext.currentDir, targetPath);
+    const resultPath = normalizeToAbsolutePath(executionContext.currentDir, targetPath);
 
     try {
         const files = await readdir(resultPath, {withFileTypes: true});
 
         const filesWithStats = files
-            // for the sake of simplicity, we will not display symlinks and other non-file/directory entries
-            .filter((file) => file.isDirectory() || file.isFile())
-            .map((file) => {
-                return {
-                    name: file.name,
-                    type: file.isDirectory() ? 'directory' : 'file',
-                }
-            })
+            .filter(filterOutNonFilesAndDirectories)
+            .map(createDisplayedFileSystemItem)
             .sort(sortDirectoriesAndFiles);
 
         console.table(filesWithStats);
     } catch (error) {
         throw new OperationFailedError();
+    }
+}
+
+/**
+ * For the sake of simplicity, we will not display symlinks and other non-file/directory entries
+ */
+const filterOutNonFilesAndDirectories = (dirent) => {
+    return dirent.isDirectory() || dirent.isFile();
+}
+
+const createDisplayedFileSystemItem = (dirent) => {
+    return {
+        name: dirent.name,
+        type: dirent.isDirectory() ? 'directory' : 'file',
     }
 }
 

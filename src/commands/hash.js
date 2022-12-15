@@ -12,7 +12,6 @@ export const hash = async (executionContext, parsedCommandLine) => {
     validateCommandLine(parsedCommandLine, {requiredArguments: ['filePath']});
 
     const targetPath = parsedCommandLine.arguments[0];
-
     const resultPath = normalizeToAbsolutePath(executionContext.currentDir, targetPath);
 
     try {

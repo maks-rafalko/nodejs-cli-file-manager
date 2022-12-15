@@ -1,6 +1,7 @@
 import { validateCommandLine } from '../commandLineValidator.js';
 import osNative from 'node:os';
 import { displayMessage } from '../io.js';
+import { OperationFailedError } from '../OperationFailedError.js';
 
 const GHZ_IN_MHZ = 1000;
 
@@ -19,11 +20,15 @@ export const os = async (executionContext, parsedCommandLine) => {
         allowZeroOptions: false
     });
 
-    for (const [optionName, optionValue] of Object.entries(parsedCommandLine.options)) {
-        if (optionValue) {
-            optionsHandlerMapping[optionName]();
-            break;
+    try {
+        for (const [optionName, optionValue] of Object.entries(parsedCommandLine.options)) {
+            if (optionValue) {
+                optionsHandlerMapping[optionName]();
+                break;
+            }
         }
+    } catch (error) {
+        throw new OperationFailedError();
     }
 }
 

@@ -8,8 +8,7 @@ export const rm = async (executionContext, parsedCommandLine) => {
     validateCommandLine(parsedCommandLine, {requiredArguments: ['filePath']});
 
     const targetPath = parsedCommandLine.arguments[0];
-
-    let resultPath = normalizeToAbsolutePath(executionContext.currentDir, targetPath);
+    const resultPath = normalizeToAbsolutePath(executionContext.currentDir, targetPath);
 
     try {
         await assertFolderDoesNotExist(resultPath);

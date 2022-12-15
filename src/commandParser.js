@@ -16,6 +16,7 @@ export const extractCommandAndArguments = (line) => {
 }
 
 const parseArgumentsStringToArray = (argsAsString) => {
+    // parse command line arguments, including those with spaces: cat "C:\Users\with spaces\file.txt"
     const regex = new RegExp('(\'[^\']+\'|"[^"]+"|[^\\s"]+)', 'gmi');
 
     const parsedMatches = [];
