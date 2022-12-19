@@ -1,6 +1,6 @@
 import { validateCommandLine } from '../commandLineValidator.js';
 import osNative from 'node:os';
-import { displayMessage } from '../io.js';
+import { displayMessage, displayTable } from '../io.js';
 import { OperationFailedError } from '../OperationFailedError.js';
 
 const GHZ_IN_MHZ = 1000;
@@ -39,11 +39,15 @@ function displayEolInfo() {
 function displayCpusInfo() {
     const cpus = osNative.cpus();
 
-    displayMessage(`Number of CPUs: ${cpus.length}`);
-
-    osNative.cpus().forEach((cpu, index) => {
-        displayMessage(`    CPU #${index + 1}. Model: ${cpu.model} speed: ${cpu.speed / GHZ_IN_MHZ} GHz`);
+    const cpusCores = osNative.cpus().map((cpu) => {
+        return {
+            model: cpu.model,
+            speed: `${cpu.speed / GHZ_IN_MHZ} GHz`
+        }
     });
+
+    displayMessage(`Number of CPUs: ${cpus.length}`);
+    displayTable(cpusCores);
 }
 
 function displayHomedirInfo() {
